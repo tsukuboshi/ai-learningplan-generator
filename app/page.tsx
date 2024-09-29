@@ -45,11 +45,11 @@ export default function App() {
     questions: [
       {
         id: 1,
-        text: "What is your current level of expertise?",
+        text: "あなたの現在の専門知識のレベルはどのくらいですか?",
       },
       {
         id: 2,
-        text: "How comfortable are you with presenting to an audience?",
+        text: "聴衆の前でプレゼンテーションをすることにどれくらい慣れていますか?",
       },
     ],
   };
@@ -81,7 +81,7 @@ export default function App() {
     setLevel(level);
     setLoading(true);
     const questionString = JSON.stringify(sampleQuestions);
-    const prompt = `To enable us generate a more relevant learning plan for a ${level} ${role} give me questions we can ask the user. Answers to this question will be fed back to an llm to generate a learning plan. Return ${noOfQuestions} questions in the following format:
+    const prompt = `${level} ${role} のより適切な学習プランを生成できるようにするには、ユーザーに尋ねることができる質問を入力してください。この質問への回答は、学習プランを生成するために生成AIにフィードバックされます。次の形式で ${noOfQuestions} 個の質問を返します:
     ${questionString}`;
     const response = await askBedrock(prompt);
     const content = JSON.parse(response);
@@ -99,11 +99,11 @@ export default function App() {
 
   const generatePlan = async (event: any) => {
     setLoading(true);
-    let answersString = `Given the following questions and answers, generate a learning plan for a ${level} ${role}:`;
+    let answersString = `次の質問と回答に基づいて、${level} ${role} の学習計画を生成します:`;
     for (const [questionId, answer] of Object.entries(answers)) {
       let question = questions.find((q) => q.id === parseInt(questionId));
       if (!question) continue;
-      answersString += `\nQuestion: ${question.text}; answer: ${answer}`;
+      answersString += `\n質問: ${question.text}; 回答: ${answer}`;
     }
 
     const response = await askBedrock(answersString);
@@ -136,22 +136,22 @@ export default function App() {
         <main>
           <div>
             <Card>
-              <Heading level={3}>Generate Learning Plans</Heading>
+              <Heading level={3}>学習計画の生成</Heading>
               <Heading level={5}>
-                Please fill out the following form to generate a learning plan.
+                学習計画を生成するには、次のフォームに記入してください。
               </Heading>
               <Flex direction="column" gap="small">
                 <SelectField
-                  label="Role"
-                  options={['', 'Cloud Architect', 'Software Engineer', 'Product Designer']}
-                  placeholder="Select a role"
+                  label="職種"
+                  options={['', 'クラウドアーキテクト', 'ソフトウェアエンジニア', 'プロダクトデザイナー']}
+                  placeholder="職種を選んでください"
                   onChange={(event) => handleRoleChange(event.target.value)}
                 ></SelectField>
 
                 <SelectField
-                  label="Level"
-                  options={['', 'Junior', 'Mid', 'Senior']}
-                  placeholder="Select a level"
+                  label="階層"
+                  options={['', 'ジュニア', 'ミッド', 'シニア']}
+                  placeholder="階層を選んでください"
                   onChange={(event) => fetchQuestions(event.target.value)}
                 ></SelectField>
 
@@ -169,7 +169,7 @@ export default function App() {
                 <button onClick={generatePlan}>Submit</button>
               </Flex>
               <div hidden={!generatedPlan}>
-                <Heading level={5}>Generated Plan</Heading>
+                <Heading level={5}>生成された計画</Heading>
                 <Flex direction="column" gap="medium">
                   <TextAreaField label="" defaultValue={generatedPlan} rows={30} onChange={(event) => handleModifiedPlan(event.target.value)}></TextAreaField>
                   <button onClick={createLearningPlan}>Save Plan</button>
@@ -177,7 +177,7 @@ export default function App() {
               </div>
             </Card>
           </div>
-          <h1>My LearningPlans</h1>
+          <h1>私の学習計画</h1>
           <ul>
             {learningPlans.map((learningPlan) => (
               <li key={learningPlan.id}>{learningPlan.role}</li>
